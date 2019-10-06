@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.cyan,
         title: Text("Marcador Pontos (Truco!)"),
         actions: <Widget>[
           IconButton(
@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
     return Text(
       name.toUpperCase(),
       style: TextStyle(
-          fontSize: 22.0, fontWeight: FontWeight.w500, color: Colors.green),
+          fontSize: 22.0, fontWeight: FontWeight.w500, color: Colors.cyan),
     );
   }
 
@@ -141,7 +141,7 @@ class _HomePageState extends State<HomePage> {
         ),
         _buildRoundedButton(
           text: '+1',
-          color: Colors.green,
+          color: Colors.cyan,
           onTap: () {
             setState(() {
               player.score++;
