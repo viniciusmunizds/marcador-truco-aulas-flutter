@@ -9,6 +9,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var _playerOne = Player(name: "Nós", score: 0, victories: 0);
   var _playerTwo = Player(name: "Eles", score: 0, victories: 0);
+  TextEditingController _renameController = TextEditingController();
 
   @override
   void initState() {
@@ -37,12 +38,21 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             onPressed: () {
-              _showDialog(
-                  title: 'Zerar',
+              _showDialog2(
+                  title: 'Zerar pontuação',
                   message:
-                      'Tem certeza que deseja começar novamente a pontuação?',
+                      'Tem certeza que deseja zerar a pontuação?',
                   confirm: () {
-                    _resetPlayers();
+                    _showDialog3(
+                      title: 'Zerar',
+                      message: 'Deseja zerar tudo ou apenas a partida atual?',
+                      confirm: () {
+                        _resetPlayers(resetVictories: true);
+                      },
+                      cancel: () {
+                        _resetPlayers(resetVictories: false);
+                      },
+                    );
                   });
             },
             icon: Icon(Icons.refresh),
@@ -60,7 +70,7 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          _showPlayerName(player.name),
+          _showPlayerName(player),
           _showPlayerScore(player.score),
           _showPlayerVictories(player.victories),
           _showScoreButtons(player),
@@ -81,11 +91,48 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _showPlayerName(String name) {
-    return Text(
-      name.toUpperCase(),
-      style: TextStyle(
-          fontSize: 22.0, fontWeight: FontWeight.w500, color: Colors.cyan),
+  Widget _showPlayerName(Player player) {
+    return GestureDetector(
+      onTap: () {
+        return showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Nome do Jogador'),
+                content: TextField(
+                  controller: _renameController,
+                  decoration: InputDecoration(hintText: "Escreva o nome aqui"),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: new Text('CANCEL'),
+                    onPressed: () {
+                      _renameController.clear();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  FlatButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      setState(() {
+                        if (_renameController.text != "") {
+                          player.name = _renameController.text;
+                          _renameController.clear();
+                        }
+                      });
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      },
+      child: Text(
+        player.name.toUpperCase(),
+        style: TextStyle(
+            fontSize: 22.0, fontWeight: FontWeight.w500, color: Colors.cyan),
+      ),
     );
   }
 
@@ -145,17 +192,23 @@ class _HomePageState extends State<HomePage> {
           onTap: () {
             setState(() {
               if (player.score < 12) player.score++;
+              if (_playerOne.score == 11 && _playerTwo.score == 11) {
+                _showDialog1(
+                  title: 'Mão de ferro',
+                  message:
+                      'Quando as duas duplas conseguem chegar a 11 pontos na partida. Todos os jogadores recebem as cartas “cobertas”, isto é, viradas para baixo, e deverão jogar assim. Quem vencer a mão, vence a partida.',
+                );
+              }
             });
 
             if (player.score == 12) {
-              _showDialog(
+              _showDialog2(
                   title: 'Fim do jogo',
                   message: '${player.name} ganhou!',
                   confirm: () {
                     setState(() {
                       player.victories++;
                     });
-
                     _resetPlayers(resetVictories: false);
                   },
                   cancel: () {
@@ -170,10 +223,34 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showDialog(
+  void _showDialog1(
       {String title, String message, Function confirm, Function cancel}) {
     showDialog(
       context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (confirm != null) confirm();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDialog2(
+      {String title, String message, Function confirm, Function cancel}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(title),
@@ -188,6 +265,36 @@ class _HomePageState extends State<HomePage> {
             ),
             FlatButton(
               child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (confirm != null) confirm();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDialog3(
+      {String title, String message, Function confirm, Function cancel}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("PARTIDA ATUAL"),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (cancel != null) cancel();
+              },
+            ),
+            FlatButton(
+              child: Text("TUDO"),
               onPressed: () {
                 Navigator.of(context).pop();
                 if (confirm != null) confirm();
