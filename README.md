@@ -1,4 +1,4 @@
-# Marcador de Truco
+# Marcador de Truco - Vinícius
 
 Aplicativo para marcar os pontos no jogo de truco criado para disciplina de Programação Mobile.
 

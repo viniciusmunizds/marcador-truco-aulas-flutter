@@ -14,7 +14,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _resetPlayers();
-    
   }
 
   void _resetPlayer({Player player, bool resetVictories = true}) {
@@ -33,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepOrange,
+        backgroundColor: Colors.green,
         title: Text("Marcador Pontos (Truco!)"),
         actions: <Widget>[
           IconButton(
@@ -86,9 +85,7 @@ class _HomePageState extends State<HomePage> {
     return Text(
       name.toUpperCase(),
       style: TextStyle(
-          fontSize: 22.0,
-          fontWeight: FontWeight.w500,
-          color: Colors.deepOrange),
+          fontSize: 22.0, fontWeight: FontWeight.w500, color: Colors.green),
     );
   }
 
@@ -144,7 +141,7 @@ class _HomePageState extends State<HomePage> {
         ),
         _buildRoundedButton(
           text: '+1',
-          color: Colors.deepOrangeAccent,
+          color: Colors.green,
           onTap: () {
             setState(() {
               player.score++;
